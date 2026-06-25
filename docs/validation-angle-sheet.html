@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Comeback — 1.6 Validation Angle Sheet</title>
+<style>
+  @page { size: landscape; margin: 8mm; }
+  body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; color: #111; margin: 0; padding: 16px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  p { font-size: 13px; line-height: 1.5; margin: 4px 0; }
+  .wrap { display: flex; gap: 24px; align-items: flex-start; }
+  .protractor { flex: 0 0 auto; }
+  .notes { flex: 1 1 auto; max-width: 360px; }
+  ol { padding-left: 18px; font-size: 13px; line-height: 1.55; }
+  .key { background: #FFF4E5; border: 1px solid #F5A524; border-radius: 8px; padding: 10px 12px; margin-top: 10px; }
+  .key b { color: #B25E00; }
+  svg text { font-family: inherit; }
+  @media print { .noprint { display: none; } }
+</style>
+</head>
+<body>
+  <h1>Comeback — Knee Angle Validation Sheet (task 1.6)</h1>
+  <p class="noprint">Open in a browser and print at <b>100% scale</b> (no "fit to page"). Landscape. This is your free goniometer.</p>
+
+  <div class="wrap">
+    <div class="protractor"><svg id="p" width="560" height="320" viewBox="0 0 560 320"></svg></div>
+    <div class="notes">
+      <p><b>What this is:</b> a printed protractor that measures the <b>interior knee angle</b> — the angle between your thigh and your shin.</p>
+      <ol>
+        <li>Cut out the protractor (or tape the whole sheet to a wall / a piece of card).</li>
+        <li>Put the centre dot on the side of your <b>knee joint</b>.</li>
+        <li>Line the <b>0–180 baseline</b> up along your <b>thigh</b>.</li>
+        <li>Read where your <b>shin</b> crosses the scale. That's the interior angle.</li>
+        <li>Bend to a few set angles (try <b>180°, 135°, 90°, 45°</b>) and at each one, write down BOTH numbers: the protractor reading and the phone's reading.</li>
+      </ol>
+      <div class="key">
+        <p style="margin:0"><b>Important — two different numbers:</b></p>
+        <p style="margin:4px 0 0">This protractor reads the <b>interior angle</b> (straight leg = 180°).<br>
+        The app reports <b>flexion</b> (straight leg = 0°).<br>
+        <b>flexion = 180 − interior angle.</b><br>
+        So protractor 135° ↔ app should read ~45°; protractor 90° ↔ app ~90°.</p>
+      </div>
+      <p style="margin-top:10px"><b>Also test position sensitivity:</b> hold one real angle steady and read the phone at a few different heights / distances / small tilts. Note how much the number drifts — that's what we standardise against.</p>
+    </div>
+  </div>
+
+<script>
+(function () {
+  const svg = document.getElementById('p');
+  const NS = 'http://www.w3.org/2000/svg';
+  const cx = 280, cy = 290, R = 250;     // centre at bottom middle, radius
+  const toXY = (deg, r) => {
+    const a = (180 - deg) * Math.PI / 180; // 0° at right, 180° at left, arc on top
+    return [cx + r * Math.cos(a), cy - r * Math.sin(a)];
+  };
+  const add = (name, attrs, text) => {
+    const el = document.createElementNS(NS, name);
+    for (const k in attrs) el.setAttribute(k, attrs[k]);
+    if (text != null) el.textContent = text;
+    svg.appendChild(el);
+    return el;
+  };
+  // arc outline
+  const [ax, ay] = toXY(0, R), [bx, by] = toXY(180, R);
+  add('path', { d: `M ${bx} ${by} A ${R} ${R} 0 0 1 ${ax} ${ay}`, fill: 'none', stroke: '#111', 'stroke-width': 2 });
+  add('line', { x1: cx - R, y1: cy, x2: cx + R, y2: cy, stroke: '#111', 'stroke-width': 2 });
+  // ticks
+  for (let d = 0; d <= 180; d += 5) {
+    const major = d % 45 === 0;
+    const med = d % 15 === 0;
+    const inner = major ? R - 34 : med ? R - 24 : R - 14;
+    const [x1, y1] = toXY(d, R), [x2, y2] = toXY(d, inner);
+    add('line', { x1, y1, x2, y2, stroke: major ? '#FF6A3D' : '#444', 'stroke-width': major ? 3 : med ? 1.5 : 1 });
+    if (med) {
+      const [lx, ly] = toXY(d, inner - 14);
+      add('text', { x: lx, y: ly, 'text-anchor': 'middle', 'dominant-baseline': 'middle',
+        'font-size': major ? 18 : 12, 'font-weight': major ? 700 : 400,
+        fill: major ? '#B25E00' : '#444' }, String(d));
+    }
+  }
+  // centre dot + label
+  add('circle', { cx, cy, r: 5, fill: '#111' });
+  add('text', { x: cx, y: cy + 22, 'text-anchor': 'middle', 'font-size': 12, fill: '#666' }, 'put this dot on the knee');
+})();
+</script>
+</body>
+</html>

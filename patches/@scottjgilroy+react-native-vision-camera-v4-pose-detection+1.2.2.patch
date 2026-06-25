@@ -1,0 +1,21 @@
+diff --git a/node_modules/@scottjgilroy/react-native-vision-camera-v4-pose-detection/android/src/main/java/com/visioncamerav3posedetection/VisionCameraV3PoseDetectionModule.kt b/node_modules/@scottjgilroy/react-native-vision-camera-v4-pose-detection/android/src/main/java/com/visioncamerav3posedetection/VisionCameraV3PoseDetectionModule.kt
+index 89f218d..cdbdadc 100644
+--- a/node_modules/@scottjgilroy/react-native-vision-camera-v4-pose-detection/android/src/main/java/com/visioncamerav3posedetection/VisionCameraV3PoseDetectionModule.kt
++++ b/node_modules/@scottjgilroy/react-native-vision-camera-v4-pose-detection/android/src/main/java/com/visioncamerav3posedetection/VisionCameraV3PoseDetectionModule.kt
+@@ -18,7 +18,7 @@ import java.util.HashMap
+ 
+ class VisionCameraV3PoseDetectionModule(proxy : VisionCameraProxy, options: Map<String, Any>?): FrameProcessorPlugin() {
+ 
+-  override fun callback(frame: Frame, arguments: Map<String, Any>?): HashMap<String, Any> {
++  override fun callback(frame: Frame, arguments: Map<String, Any>?): HashMap<String, Any?> {
+     try {
+       val options = PoseDetectorOptions.Builder()
+       if (arguments?.get("mode") === "stream") options.setDetectorMode(PoseDetectorOptions.STREAM_MODE)
+@@ -50,6 +50,7 @@ class VisionCameraV3PoseDetectionModule(proxy : VisionCameraProxy, options: Map<
+         val landmarkMap = WritableNativeMap()
+         landmarkMap.putDouble("x", landmark?.position?.x?.toDouble() ?: 0.0)
+         landmarkMap.putDouble("y", landmark?.position?.y?.toDouble() ?: 0.0)
++        landmarkMap.putDouble("inFrameLikelihood", landmark?.inFrameLikelihood?.toDouble() ?: 0.0)
+ 
+         map.putMap(landmarkName, landmarkMap)
+       }
