@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.ts",
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^7.18.3",
+    "@react-navigation/native": "^7.3.4",
+    "@react-navigation/native-stack": "^7.17.6",
     "@scottjgilroy/react-native-vision-camera-v4-pose-detection": "^1.2.2",
     "expo": "~53.0.0",
     "expo-asset": "~11.1.7",
@@ -12,11 +15,18 @@
     "expo-file-system": "~18.1.11",
     "expo-font": "~13.3.2",
     "expo-keep-awake": "~14.1.4",
+    "expo-sensors": "~14.1.4",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
     "react-native": "0.79.6",
+    "react-native-mmkv": "^4.3.2",
+    "react-native-nitro-modules": "^0.35.10",
+    "react-native-safe-area-context": "5.4.0",
+    "react-native-screens": "~4.11.1",
+    "react-native-svg": "15.11.2",
     "react-native-vision-camera": "^4.7.3",
-    "react-native-worklets-core": "^1.6.3"
+    "react-native-worklets-core": "^1.6.3",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.18.6",
