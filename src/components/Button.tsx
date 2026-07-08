@@ -16,12 +16,13 @@ interface Props {
   left?: React.ReactNode;
 }
 
-const pad: Record<Size, { v: number; h: number; font: 'title' | 'bodyStrong' | 'caption' }> = {
-  lg: { v: 16, h: 24, font: 'title' },
-  md: { v: 12, h: 20, font: 'bodyStrong' },
-  sm: { v: 8, h: 14, font: 'caption' },
+const pad: Record<Size, { v: number; h: number; font: 'title' | 'bodyStrong' | 'label' }> = {
+  lg: { v: 15, h: 22, font: 'title' },
+  md: { v: 11, h: 18, font: 'bodyStrong' },
+  sm: { v: 8, h: 14, font: 'label' },
 };
 
+/** Flat pill button. Primary = solid orange with near-black text (fintech look). */
 export function Button({
   title,
   onPress,
@@ -52,14 +53,13 @@ export function Button({
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={isPrimary ? '#fff' : palette.textHi} />
+        <ActivityIndicator color={isPrimary ? palette.ink : palette.textHi} />
       ) : (
         <View style={styles.row}>
           {left}
           <Text
             variant={p.font}
-            tone={isPrimary ? 'hi' : isGhost ? 'mid' : 'hi'}
-            style={isPrimary ? styles.primaryText : undefined}
+            style={{ color: isPrimary ? palette.ink : isGhost ? palette.textMid : palette.textHi }}
           >
             {title}
           </Text>
@@ -70,17 +70,16 @@ export function Button({
 }
 
 const styles = StyleSheet.create({
-  base: { borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
+  base: { borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   full: { alignSelf: 'stretch' },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   primary: { backgroundColor: palette.orange },
-  primaryText: { color: '#fff' },
   secondary: {
     backgroundColor: palette.surfaceAlt,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: palette.hairline,
   },
   ghost: { backgroundColor: 'transparent' },
-  pressed: { opacity: 0.85, transform: [{ scale: 0.98 }] },
-  disabled: { opacity: 0.4 },
+  pressed: { opacity: 0.8 },
+  disabled: { opacity: 0.35 },
 });

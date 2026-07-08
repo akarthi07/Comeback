@@ -62,7 +62,7 @@ export function LadderScreen() {
                     </Text>
                   )}
                 </View>
-                {isNext && <Text variant="label" tone="orange" uppercase>Next</Text>}
+                {isNext && <Text variant="label" tone="orange">Next</Text>}
               </View>
             </Card>
           </Pressable>

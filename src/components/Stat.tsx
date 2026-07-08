@@ -14,7 +14,7 @@ interface Props {
 export function Stat({ value, label, unit, delta, deltaSuffix = '' }: Props) {
   return (
     <View>
-      <Text variant="label" tone="mid" uppercase>
+      <Text variant="label" tone="mid">
         {label}
       </Text>
       <View style={styles.row}>

@@ -27,7 +27,7 @@ export function MeasurementResult({ result, otherLegFlexion, saved, onSave, onRe
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + spacing.x2, paddingBottom: insets.bottom + 80 }]}>
-      <Text variant="label" tone="orange" uppercase>
+      <Text variant="label" tone="orange">
         {result.leg} knee · result
       </Text>
       <Text variant="h1" style={{ marginTop: 4, marginBottom: spacing.xl }}>
@@ -37,7 +37,7 @@ export function MeasurementResult({ result, otherLegFlexion, saved, onSave, onRe
       <Card style={styles.heroCard}>
         <View style={styles.heroRow}>
           <View style={styles.heroCol}>
-            <Text variant="label" tone="mid" uppercase>
+            <Text variant="label" tone="mid">
               Bend
             </Text>
             <View style={styles.numRow}>
@@ -49,7 +49,7 @@ export function MeasurementResult({ result, otherLegFlexion, saved, onSave, onRe
           </View>
           <View style={styles.divider} />
           <View style={styles.heroCol}>
-            <Text variant="label" tone="mid" uppercase>
+            <Text variant="label" tone="mid">
               Straighten
             </Text>
             <View style={styles.numRow}>

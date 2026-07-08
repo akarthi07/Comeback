@@ -47,3 +47,6 @@ yarn-error.*
 
 # machine-specific Norton TLS trust store (regenerable; see build notes)
 /comeback-cacerts
+
+# design reference images (not app code)
+/IMG_*.png

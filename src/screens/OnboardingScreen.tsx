@@ -30,7 +30,7 @@ export function OnboardingScreen() {
   return (
     <View style={[styles.root, { paddingTop: insets.top + spacing.x4, paddingBottom: insets.bottom + spacing.x2 }]}>
       <View style={styles.top}>
-        <Text variant="label" tone="orange" uppercase>
+        <Text variant="label" tone="orange">
           Comeback
         </Text>
         <Text variant="display" style={styles.hero}>

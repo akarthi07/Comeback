@@ -1,6 +1,6 @@
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Screen, Card, Text, Button, GapMeter, ProgressBar, Badge } from '../components';
+import { Screen, Card, Text, GapMeter, Button } from '../components';
 import { palette, spacing, tabularNums } from '../theme';
 import { useGoal, useSessions, useLadder, useReadiness } from '../store';
 
@@ -11,109 +11,106 @@ export function DashboardScreen() {
   const goal = useGoal((s) => s.goal);
   const sessions = useSessions((s) => s.sessions);
   const rungs = useLadder((s) => s.rungs);
-  const { physical, confidence, gap, hasData } = useReadiness();
+  const { physical, confidence, gap, series } = useReadiness();
 
   const dayN = goal ? Math.max(1, Math.floor((Date.now() - Date.parse(goal.createdAt)) / DAY)) : 1;
-  const weekAgo = Date.now() - 7 * DAY;
-  const sessionsThisWeek = sessions.filter((s) => Date.parse(s.dateISO) > weekAgo).length;
+  const weekDelta =
+    series.physical.length >= 2
+      ? series.physical[series.physical.length - 1] - series.physical[series.physical.length - 2]
+      : 0;
   const bestFlexion = sessions.reduce((m, s) => Math.max(m, s.maxFlexion), 0);
   const rungsDone = rungs.filter((r) => r.done).length;
-
-  const headline =
-    gap >= 18
-      ? 'Your knee is ahead of your confidence.'
-      : gap >= 8
-      ? 'Confidence is catching up to your knee.'
-      : 'Body and confidence are in sync.';
+  const nextRung = rungs.find((r) => !r.done);
 
   return (
-    <Screen title="Comeback" subtitle={`Day ${dayN} · ${goal?.activity ?? 'your comeback'}`}>
-      {/* HERO — the readiness gap */}
-      <Card accent={palette.amber} style={styles.hero}>
-        <Text variant="title" style={{ marginBottom: spacing.lg }}>
-          {headline}
+    <Screen>
+      {/* header */}
+      <View style={styles.header}>
+        <View>
+          <Text variant="h2">Comeback</Text>
+          <Text variant="caption" tone="mid" style={{ marginTop: 2 }}>
+            Day {dayN} · {goal?.activity ?? 'your comeback'}
+          </Text>
+        </View>
+        <Button title="Measure" size="md" onPress={() => nav.navigate('Measure')} />
+      </View>
+
+      {/* hero — physical readiness */}
+      <View style={styles.hero}>
+        <Text variant="label" tone="mid">Physical readiness</Text>
+        <View style={styles.heroRow}>
+          <Text variant="display" style={tabularNums}>{physical}</Text>
+          <Text variant="h1" tone="mid" style={styles.pct}>%</Text>
+        </View>
+        <Text variant="body" tone={weekDelta >= 0 ? 'green' : 'red'} style={tabularNums}>
+          {weekDelta >= 0 ? '▲' : '▼'} {Math.abs(Math.round(weekDelta))} this week
         </Text>
+      </View>
+
+      {/* mini stat row */}
+      <View style={styles.stats}>
+        <Mini label="Best bend" value={`${bestFlexion}°`} />
+        <Mini label="Confidence" value={`${confidence}`} />
+        <Mini label="Gap" value={`${gap}`} tone={gap >= 18 ? 'amber' : 'hi'} />
+        <Mini label="Sessions" value={`${sessions.length}`} />
+      </View>
+
+      {/* gap rail */}
+      <Card style={styles.card}>
         <GapMeter physical={physical} confidence={confidence} />
-        <Text variant="caption" tone="mid" style={{ marginTop: spacing.lg }}>
-          Recovery is physical and mental. We track both so the gap doesn't sneak up on you.
-        </Text>
       </Card>
 
-      {/* quick stats */}
-      <View style={styles.statRow}>
-        <Card style={styles.statCard}>
-          <Text variant="label" tone="mid" uppercase>
-            Best flexion
-          </Text>
-          <View style={styles.statValueRow}>
-            <Text variant="h1" style={tabularNums}>
-              {bestFlexion}
-            </Text>
-            <Text variant="title" tone="mid">
-              °
-            </Text>
-          </View>
-          <Text variant="caption" tone="low">
-            goal {goal?.targetFlexion ?? 135}°
-          </Text>
-        </Card>
-        <Card style={styles.statCard}>
-          <Text variant="label" tone="mid" uppercase>
-            This week
-          </Text>
-          <View style={styles.statValueRow}>
-            <Text variant="h1" style={tabularNums}>
-              {sessionsThisWeek}
-            </Text>
-            <Text variant="title" tone="mid">
-              {' '}sessions
-            </Text>
-          </View>
-          <Text variant="caption" tone="low">
-            keep the streak alive
-          </Text>
-        </Card>
-      </View>
-
-      {/* CTAs */}
-      <View style={styles.ctaRow}>
-        <View style={{ flex: 1 }}>
-          <Button title="Measure" full onPress={() => nav.navigate('Measure')} />
-        </View>
-        <View style={{ flex: 1 }}>
-          <Button title="Confidence check" variant="secondary" full onPress={() => nav.navigate('Confidence')} />
-        </View>
-      </View>
-
-      {/* ladder mini */}
-      <Card onPress={() => nav.navigate('Ladder')} style={styles.ladder}>
-        <View style={styles.ladderTop}>
-          <Text variant="title">The comeback ladder</Text>
-          <Badge label={`${rungsDone}/${rungs.length}`} tone="orange" />
-        </View>
-        <ProgressBar value={rungs.length ? rungsDone / rungs.length : 0} color={palette.orange} />
-        <Text variant="caption" tone="mid" style={{ marginTop: spacing.sm }}>
-          {rungsDone < rungs.length
-            ? `Next: ${rungs.find((r) => !r.done)?.label}`
-            : 'All rungs cleared — you’re back.'}
-        </Text>
+      {/* up next */}
+      <Text variant="label" tone="low" style={styles.sectionLabel}>Up next</Text>
+      <Card padded={false} style={styles.card}>
+        <Row title="Measure your knee" subtitle="Guided range-of-motion capture" onPress={() => nav.navigate('Measure')} />
+        <Divider />
+        <Row title="Confidence check" subtitle="How much do you trust the leg today?" onPress={() => nav.navigate('Confidence')} />
+        <Divider />
+        <Row
+          title={nextRung ? nextRung.label : 'All rungs cleared'}
+          subtitle={`Ladder · ${rungsDone}/${rungs.length} cleared`}
+          onPress={() => nav.navigate('Ladder')}
+        />
       </Card>
-
-      {!hasData && (
-        <Text variant="caption" tone="low" center style={{ marginTop: spacing.lg }}>
-          Showing sample data. Take a measurement to start your real record.
-        </Text>
-      )}
     </Screen>
   );
 }
 
+function Mini({ label, value, tone = 'hi' }: { label: string; value: string; tone?: 'hi' | 'amber' }) {
+  return (
+    <View style={styles.mini}>
+      <Text variant="caption" tone="mid">{label}</Text>
+      <Text variant="title" tone={tone} style={[{ marginTop: 3 }, tabularNums]}>{value}</Text>
+    </View>
+  );
+}
+
+function Row({ title, subtitle, onPress }: { title: string; subtitle: string; onPress: () => void }) {
+  return (
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.row, pressed && { opacity: 0.6 }]}>
+      <View style={{ flex: 1 }}>
+        <Text variant="title">{title}</Text>
+        <Text variant="caption" tone="mid" style={{ marginTop: 2 }}>{subtitle}</Text>
+      </View>
+      <Text variant="title" tone="low">›</Text>
+    </Pressable>
+  );
+}
+
+function Divider() {
+  return <View style={styles.divider} />;
+}
+
 const styles = StyleSheet.create({
-  hero: { marginBottom: spacing.lg },
-  statRow: { flexDirection: 'row', gap: spacing.md, marginBottom: spacing.lg },
-  statCard: { flex: 1 },
-  statValueRow: { flexDirection: 'row', alignItems: 'baseline', marginTop: 4 },
-  ctaRow: { flexDirection: 'row', gap: spacing.md, marginBottom: spacing.lg },
-  ladder: {},
-  ladderTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.x3 },
+  hero: { marginBottom: spacing.x2 },
+  heroRow: { flexDirection: 'row', alignItems: 'baseline', marginVertical: 2 },
+  pct: { marginLeft: 2 },
+  stats: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: spacing.x2 },
+  mini: { flex: 1 },
+  card: { marginBottom: spacing.lg },
+  sectionLabel: { marginBottom: spacing.sm, marginLeft: 2 },
+  row: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.xl, paddingVertical: spacing.lg },
+  divider: { height: StyleSheet.hairlineWidth, backgroundColor: palette.hairline, marginLeft: spacing.xl },
 });

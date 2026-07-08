@@ -212,7 +212,7 @@ export function MeasureScreen() {
       <View style={[styles.hud, { paddingTop: insets.top + spacing.md, paddingBottom: insets.bottom + 80 }]} pointerEvents="box-none">
         {/* top: live angle */}
         <View style={styles.angleChip}>
-          <Text variant="label" tone="mid" uppercase>{leg} knee</Text>
+          <Text variant="label" tone="mid">{leg} knee</Text>
           <Text variant="display" tone={ready || recording ? 'green' : 'mid'} style={[styles.angleNum, tabularNums]}>
             {liveStr}
           </Text>

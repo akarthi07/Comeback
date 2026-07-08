@@ -1,31 +1,21 @@
 import { View, ViewProps, Pressable, StyleSheet } from 'react-native';
-import { palette, radius, spacing, shadow } from '../theme';
+import { palette, radius, spacing } from '../theme';
 
 interface Props extends ViewProps {
   padded?: boolean;
-  glow?: string; // accent color for a subtle outer glow (use sparingly)
   onPress?: () => void;
-  accent?: string; // a thin left accent rail
+  /** Kept for API compatibility; ignored in the flat design. */
+  accent?: string;
+  glow?: string;
 }
 
-/** A surface panel. Hairline border + soft shadow. The visual unit everything sits in. */
-export function Card({ padded = true, glow, accent, onPress, style, children, ...rest }: Props) {
+/** A flat surface panel: subtle fill + hairline border. No shadow, no glow. */
+export function Card({ padded = true, onPress, style, children, ...rest }: Props) {
   const body = (
-    <View
-      {...rest}
-      style={[
-        styles.card,
-        padded && styles.padded,
-        glow ? { borderColor: glow, ...shadow.glow(glow) } : shadow.card,
-        accent != null && styles.withAccent,
-        style,
-      ]}
-    >
-      {accent != null && <View style={[styles.accentRail, { backgroundColor: accent }]} />}
+    <View {...rest} style={[styles.card, padded && styles.padded, style]}>
       {children}
     </View>
   );
-
   if (onPress) {
     return (
       <Pressable onPress={onPress} style={({ pressed }) => pressed && styles.pressed}>
@@ -45,15 +35,5 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   padded: { padding: spacing.xl },
-  withAccent: { paddingLeft: spacing.xl + 3 },
-  accentRail: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    bottom: 0,
-    width: 3,
-    borderTopLeftRadius: radius.lg,
-    borderBottomLeftRadius: radius.lg,
-  },
-  pressed: { opacity: 0.85, transform: [{ scale: 0.99 }] },
+  pressed: { opacity: 0.7 },
 });

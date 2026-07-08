@@ -44,13 +44,13 @@ export function MainTabs() {
 
 const styles = StyleSheet.create({
   bar: {
-    backgroundColor: palette.surface,
+    backgroundColor: palette.ink,
     borderTopColor: palette.hairline,
     borderTopWidth: StyleSheet.hairlineWidth,
     height: 64,
-    paddingTop: 6,
+    paddingTop: 8,
     paddingBottom: 10,
   },
-  label: { ...typeScale.caption, fontSize: 11, fontWeight: '600' },
+  label: { ...typeScale.label, fontSize: 11 },
   item: { paddingTop: 2 },
 });

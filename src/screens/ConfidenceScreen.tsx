@@ -66,7 +66,7 @@ export function ConfidenceScreen() {
 
       {recent.length > 0 && (
         <Card style={{ marginTop: spacing.lg }}>
-          <Text variant="label" tone="mid" uppercase style={{ marginBottom: spacing.md }}>
+          <Text variant="label" tone="mid" style={{ marginBottom: spacing.md }}>
             Recent checks
           </Text>
           {recent.map((c) => (
