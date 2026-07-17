@@ -2,10 +2,14 @@ import type { Goal, MeasurementSession, ConfidenceCheck } from '../store/types';
 import { useGoal } from '../store/useGoal';
 import { useSessions } from '../store/useSessions';
 import { useConfidence } from '../store/useConfidence';
+import { useCalibration } from '../store/useCalibration';
+import { useLadder } from '../store/useLadder';
 import { mmkv } from '../store/storage';
 
 const DAY = 86_400_000;
-const SEED_FLAG = 'comeback.seeded';
+// Bump the version suffix to force existing installs to re-seed (e.g. when the
+// mock shape changes — ACL-RSI subscales were added in v2).
+const SEED_FLAG = 'comeback.seeded.v2';
 
 let _id = 0;
 const id = (p: string) => `${p}_${Date.now().toString(36)}_${_id++}`;
@@ -56,13 +60,22 @@ export function buildMockData(): {
       });
     }
 
-    // 1 confidence check per week
+    // 1 ACL-RSI check per week. Subscales diverge realistically: confidence in
+    // performance leads, emotions track the middle, and risk appraisal lags the
+    // most (it's the slowest domain to shift — see RsiResult framing).
     const cJitter = (Math.cos(w * 1.3) + 1) * 2; // 0..4
+    const clamp = (x: number) => Math.max(0, Math.min(100, Math.round(x)));
+    const confidence = clamp(baseConf + 8 + cJitter - 2);
+    const emotions = clamp(baseConf + cJitter - 2);
+    const riskAppraisal = clamp(baseConf - 14 + cJitter - 2);
     checks.push({
       id: id('conf'),
       dateISO: new Date(now - (w * 7 + 2) * DAY).toISOString(),
-      score: Math.round(baseConf + cJitter - 2),
-      prompt: 'How much do you trust your left knee today?',
+      score: Math.round((confidence * 5 + emotions * 5 + riskAppraisal * 2) / 12),
+      confidence,
+      emotions,
+      riskAppraisal,
+      prompt: 'ACL-RSI check',
     });
   }
 
@@ -85,4 +98,18 @@ export function isSeeded() {
 
 export function clearSeedFlag() {
   mmkv.remove(SEED_FLAG);
+}
+
+/**
+ * Wipe everything and return the app to a fresh state (→ onboarding). Clears
+ * each store's in-memory state (so the UI updates immediately without a reload)
+ * as well as its persisted copy, plus the seed flag.
+ */
+export function resetAllData() {
+  useGoal.getState().clearGoal();
+  useSessions.getState().clearSessions();
+  useConfidence.getState().clearChecks();
+  useCalibration.getState().clearCalibration();
+  useLadder.getState().resetLadder();
+  clearSeedFlag();
 }

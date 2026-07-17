@@ -56,14 +56,14 @@ export function LineChart({ physical, confidence, labels, height = 180 }: Props)
             {/* gap band */}
             <Path d={bandPath} fill={palette.amberSoft} />
             {/* confidence line */}
-            <Polyline points={pts(confidence)} fill="none" stroke={palette.orange} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+            <Polyline points={pts(confidence)} fill="none" stroke={palette.textHi} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
             {/* physical line */}
             <Polyline points={pts(physical)} fill="none" stroke={palette.green} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
             {/* end dots */}
             {n > 0 && (
               <>
                 <Circle cx={xAt(physical.length - 1)} cy={yAt(physical[physical.length - 1])} r={4} fill={palette.green} />
-                <Circle cx={xAt(confidence.length - 1)} cy={yAt(confidence[confidence.length - 1])} r={4} fill={palette.orange} />
+                <Circle cx={xAt(confidence.length - 1)} cy={yAt(confidence[confidence.length - 1])} r={4} fill={palette.textHi} />
               </>
             )}
           </Svg>

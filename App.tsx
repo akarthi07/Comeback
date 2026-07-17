@@ -1,19 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
 import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer, DarkTheme, Theme } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 import {
-  useFonts,
-  Inter_400Regular,
-  Inter_500Medium,
-  Inter_600SemiBold,
-  Inter_700Bold,
-  Inter_800ExtraBold,
-} from '@expo-google-fonts/inter';
+  IBMPlexSans_400Regular,
+  IBMPlexSans_500Medium,
+  IBMPlexSans_600SemiBold,
+  IBMPlexSans_700Bold,
+} from '@expo-google-fonts/ibm-plex-sans';
+import {
+  IBMPlexMono_400Regular,
+  IBMPlexMono_500Medium,
+  IBMPlexMono_600SemiBold,
+} from '@expo-google-fonts/ibm-plex-mono';
 import { palette } from './src/theme';
 import { RootNavigator } from './src/navigation/RootNavigator';
-import { seedMockData } from './src/data/mock';
 
 const navTheme: Theme = {
   ...DarkTheme,
@@ -21,28 +23,25 @@ const navTheme: Theme = {
     ...DarkTheme.colors,
     background: palette.ink,
     card: palette.surface,
-    primary: palette.orange,
+    primary: palette.green,
     text: palette.textHi,
     border: palette.hairline,
-    notification: palette.orange,
+    notification: palette.green,
   },
 };
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    Inter_400Regular,
-    Inter_500Medium,
-    Inter_600SemiBold,
-    Inter_700Bold,
-    Inter_800ExtraBold,
+    IBMPlexSans_400Regular,
+    IBMPlexSans_500Medium,
+    IBMPlexSans_600SemiBold,
+    IBMPlexSans_700Bold,
+    IBMPlexMono_400Regular,
+    IBMPlexMono_500Medium,
+    IBMPlexMono_600SemiBold,
   });
 
-  // Seed sample data once so the product is demoable before real data exists.
-  useEffect(() => {
-    seedMockData();
-  }, []);
-
-  // Hold a black screen (no white flash) until Inter is ready.
+  // Hold a black screen (no white flash) until fonts are ready.
   if (!fontsLoaded) {
     return <View style={{ flex: 1, backgroundColor: palette.ink }} />;
   }

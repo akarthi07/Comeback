@@ -284,10 +284,10 @@ const styles = StyleSheet.create({
   legPill: {
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.xl,
-    borderRadius: radius.pill,
+    borderRadius: radius.md,
     backgroundColor: 'rgba(21,24,30,0.85)',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: palette.hairline,
   },
-  legPillActive: { borderColor: palette.orange, backgroundColor: palette.orangeSoft },
+  legPillActive: { borderColor: palette.green, backgroundColor: palette.greenSoft },
 });

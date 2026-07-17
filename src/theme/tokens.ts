@@ -1,20 +1,29 @@
 /**
  * Comeback design tokens — v2, "fintech-flat".
  *
- * Reference aesthetic: true near-black, cards that are barely-there, a mostly
- * monochrome palette where the accent (orange) shows up ONLY on the primary
- * action / active state, green for positive values, red for negative. No
- * shadows, no glows, no soft-color chip fills, no heavy uppercase tracking.
- * Typography is Inter — a tight professional grotesk.
+ * Reference aesthetic (Polymarket-style): true near-black, cards that are
+ * barely-there, an almost fully MONOCHROME palette. There is exactly ONE accent
+ * color — a calm green — used sparingly for positive values, the active state,
+ * and "ready". Everything else (secondary data, gaps, confidence) is greyscale
+ * so the one green reads as intentional. No orange, no shadows, no glows, no
+ * soft-color chip fills, no heavy uppercase tracking. Typography is Inter.
  */
 
-/** Inter families loaded at startup (see App.tsx useFonts). */
+/**
+ * IBM Plex families loaded at startup (see App.tsx useFonts).
+ * Plex Sans for all UI text; Plex Mono for numeric/data readouts (angles,
+ * scores) — the mono numerals give an instrument-panel precision. Plex tops out
+ * at 700 (Bold), so `extrabold` maps to Bold.
+ */
 export const fonts = {
-  regular: 'Inter_400Regular',
-  medium: 'Inter_500Medium',
-  semibold: 'Inter_600SemiBold',
-  bold: 'Inter_700Bold',
-  extrabold: 'Inter_800ExtraBold',
+  regular: 'IBMPlexSans_400Regular',
+  medium: 'IBMPlexSans_500Medium',
+  semibold: 'IBMPlexSans_600SemiBold',
+  bold: 'IBMPlexSans_700Bold',
+  extrabold: 'IBMPlexSans_700Bold',
+  mono: 'IBMPlexMono_400Regular',
+  monoMedium: 'IBMPlexMono_500Medium',
+  monoSemibold: 'IBMPlexMono_600SemiBold',
 } as const;
 
 export const palette = {
@@ -29,19 +38,23 @@ export const palette = {
   textMid: '#8B909A',
   textLow: '#565A62',
 
-  // accent — used sparingly
-  orange: '#FF6A3D',
-  orangeDeep: '#E85A2E',
-  green: '#3DDC97',
-  amber: '#F5A524',
-  red: '#FF5A5F',
+  // THE accent — a calm green, used sparingly. Not neon.
+  green: '#34C77B',
+  greenDeep: '#26965C',
+  red: '#E5484D', // negative values only
 
-  // very-low-alpha tints — ONLY for chart fills / a single subtle bar.
-  // Not for chip backgrounds (that's the bubbly look we're removing).
-  orangeSoft: 'rgba(255,106,61,0.10)',
-  greenSoft: 'rgba(61,220,151,0.10)',
-  amberSoft: 'rgba(245,165,36,0.12)',
-  redSoft: 'rgba(255,90,95,0.10)',
+  // Legacy names kept so nothing breaks — deliberately neutralised to greys so
+  // any stray reference stays monochrome. Do NOT use these for new work; the
+  // only real accent is `green`.
+  orange: '#8B909A',
+  orangeDeep: '#565A62',
+  amber: '#8B909A',
+
+  // very-low-alpha tints — ONLY for chart fills / a single subtle band.
+  greenSoft: 'rgba(52,199,123,0.12)',
+  orangeSoft: 'rgba(255,255,255,0.05)',
+  amberSoft: 'rgba(255,255,255,0.05)',
+  redSoft: 'rgba(229,72,77,0.10)',
 } as const;
 
 export const spacing = {
@@ -56,11 +69,15 @@ export const spacing = {
   x5: 56,
 } as const;
 
+/**
+ * Corner radii — deliberately SMALL. Institutional/terminal software is squared,
+ * not rounded. Pills read as consumer/playful, so buttons use `md`, not `pill`.
+ */
 export const radius = {
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 20,
+  sm: 3,
+  md: 5,
+  lg: 7,
+  xl: 8,
   pill: 999,
 } as const;
 
@@ -70,18 +87,35 @@ export const radius = {
  * what makes it read "designed" rather than default.
  */
 export const type = {
-  display: { fontFamily: fonts.extrabold, fontSize: 40, letterSpacing: -1.2 },
-  h1: { fontFamily: fonts.bold, fontSize: 26, letterSpacing: -0.6 },
-  h2: { fontFamily: fonts.semibold, fontSize: 20, letterSpacing: -0.4 },
-  title: { fontFamily: fonts.semibold, fontSize: 16, letterSpacing: -0.2 },
-  body: { fontFamily: fonts.regular, fontSize: 15, letterSpacing: -0.1 },
-  bodyStrong: { fontFamily: fonts.semibold, fontSize: 15, letterSpacing: -0.1 },
-  label: { fontFamily: fonts.medium, fontSize: 12.5, letterSpacing: 0 },
+  // Big numbers stay tight but not exaggerated — restrained, not "designed".
+  display: { fontFamily: fonts.bold, fontSize: 38, letterSpacing: -0.6 },
+  h1: { fontFamily: fonts.semibold, fontSize: 24, letterSpacing: -0.3 },
+  h2: { fontFamily: fonts.semibold, fontSize: 19, letterSpacing: -0.2 },
+  title: { fontFamily: fonts.semibold, fontSize: 15.5, letterSpacing: -0.1 },
+  body: { fontFamily: fonts.regular, fontSize: 15, letterSpacing: 0 },
+  bodyStrong: { fontFamily: fonts.semibold, fontSize: 15, letterSpacing: 0 },
+  // Eyebrow micro-label: UPPERCASE + positive tracking. This is the single
+  // strongest "professional/institutional" typographic signal.
+  label: {
+    fontFamily: fonts.semibold,
+    fontSize: 11,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase' as const,
+  },
   caption: { fontFamily: fonts.regular, fontSize: 13, letterSpacing: 0 },
 } as const;
 
-/** Tabular numerals — use on any stat that changes so it doesn't jitter. */
-export const tabularNums = { fontVariant: ['tabular-nums' as const] };
+/**
+ * Data numerals. Applied to every stat/measurement so numbers render in IBM
+ * Plex Mono — fixed-width, non-jittering, instrument-panel precise. Because
+ * it's passed via the `style` prop it overrides the variant's family, so any
+ * `<Text variant="display" style={tabularNums}>` number becomes mono while
+ * word headlines (no tabularNums) stay in Plex Sans.
+ */
+export const tabularNums = {
+  fontFamily: fonts.monoMedium,
+  fontVariant: ['tabular-nums' as const],
+};
 
 export const theme = { palette, spacing, radius, type, tabularNums, fonts } as const;
 export type Theme = typeof theme;

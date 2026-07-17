@@ -2,17 +2,10 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { zustandMMKV } from './storage';
 import type { LadderRung } from './types';
+import { CUTTING_LADDER } from '../content/cuttingLadder';
 
-/** Default comeback ladder — the rungs from protected motion back to full send. */
-export const DEFAULT_RUNGS: LadderRung[] = [
-  { id: 'r1', label: 'Pain-free full extension', targetFlexion: 5, done: false },
-  { id: 'r2', label: 'Bend to 90°', targetFlexion: 90, done: false },
-  { id: 'r3', label: 'Bend past 120°', targetFlexion: 120, done: false },
-  { id: 'r4', label: 'Full deep bend (135°+)', targetFlexion: 135, done: false },
-  { id: 'r5', label: 'Single-leg balance, 30s', done: false },
-  { id: 'r6', label: 'Jog without thinking about it', done: false },
-  { id: 'r7', label: 'Cut & pivot at speed', done: false },
-];
+/** The v1 ladder content — the curated cutting re-exposure progression. */
+export const DEFAULT_RUNGS: LadderRung[] = CUTTING_LADDER;
 
 interface LadderState {
   rungs: LadderRung[];
@@ -36,6 +29,13 @@ export const useLadder = create<LadderState>()(
       setRungs: (rungs) => set({ rungs }),
       resetLadder: () => set({ rungs: DEFAULT_RUNGS }),
     }),
-    { name: 'comeback.ladder', storage: createJSONStorage(() => zustandMMKV) }
+    {
+      name: 'comeback.ladder',
+      storage: createJSONStorage(() => zustandMMKV),
+      // v2: replaced the ROM-milestone rungs with the cutting re-exposure ladder.
+      // Rung IDs changed entirely, so old progress can't map — reset to the new set.
+      version: 2,
+      migrate: () => ({ rungs: DEFAULT_RUNGS }),
+    }
   )
 );

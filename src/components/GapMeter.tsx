@@ -34,7 +34,7 @@ export function GapMeter({ physical, confidence }: Props) {
         {w > 0 && (
           <>
             <View style={[styles.band, { left: x(lo), width: x(hi) - x(lo) }]} />
-            <View style={[styles.marker, { left: x(confidence) - 1, backgroundColor: palette.orange }]} />
+            <View style={[styles.marker, { left: x(confidence) - 1, backgroundColor: palette.textHi }]} />
             <View style={[styles.marker, { left: x(physical) - 1, backgroundColor: palette.green }]} />
           </>
         )}
@@ -42,7 +42,7 @@ export function GapMeter({ physical, confidence }: Props) {
 
       <View style={styles.legend}>
         <LegendItem color={palette.green} label="Physical" value={physical} />
-        <LegendItem color={palette.orange} label="Confidence" value={confidence} />
+        <LegendItem color={palette.textHi} label="Confidence" value={confidence} />
       </View>
     </View>
   );

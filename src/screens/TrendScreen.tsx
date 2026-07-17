@@ -4,15 +4,33 @@ import { palette, spacing, tabularNums } from '../theme';
 import { useReadiness } from '../store';
 
 export function TrendScreen() {
-  const { series, physical, confidence, gap } = useReadiness(8);
+  const { series, physical, confidence, gap, sessionCount, checkCount } = useReadiness(8);
+
+  // A single point isn't a trend — show an intentional early state instead of a
+  // flat, broken-looking chart until there's enough to draw a line.
+  const enoughForTrend = sessionCount >= 2 || checkCount >= 2;
+  if (!enoughForTrend) {
+    return (
+      <Screen title="Trend" subtitle="The gap, over time">
+        <Card>
+          <Text variant="h2">Your trend starts here</Text>
+          <Text variant="body" tone="mid" style={{ marginTop: spacing.sm }}>
+            {sessionCount + checkCount === 0
+              ? 'Once you log a couple of measurements and confidence checks, this is where you’ll watch your range climb and the readiness gap close.'
+              : 'Nice start. Log one or two more and the trend lines — and the gap between body and head — will appear here.'}
+          </Text>
+        </Card>
+      </Screen>
+    );
+  }
 
   return (
     <Screen title="Trend" subtitle="The gap, over time">
       <Card>
         <View style={styles.legendRow}>
           <Legend color={palette.green} label="Physical" value={physical} />
-          <Legend color={palette.orange} label="Confidence" value={confidence} />
-          <Legend color={palette.amber} label="Gap" value={gap} />
+          <Legend color={palette.textHi} label="Confidence" value={confidence} />
+          <Legend color={palette.textLow} label="Gap" value={gap} />
         </View>
         <LineChart physical={series.physical} confidence={series.confidence} labels={series.labels} />
       </Card>
@@ -22,9 +40,9 @@ export function TrendScreen() {
           What this shows
         </Text>
         <Text variant="body" tone="mid">
-          The green line is your knee’s physical recovery. The orange line is how much you
-          actually trust it. The amber band between them is the{' '}
-          <Text variant="bodyStrong" tone="amber">
+          The green line is your knee’s physical recovery. The white line is how much you
+          actually trust it. The band between them is the{' '}
+          <Text variant="bodyStrong" tone="hi">
             readiness gap
           </Text>
           {' '}— and it closes slower than the body heals. Naming it is how you close it.

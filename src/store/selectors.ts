@@ -70,6 +70,8 @@ export interface ReadinessNow {
   gap: number;
   series: WeeklySeries;
   hasData: boolean;
+  sessionCount: number;
+  checkCount: number;
 }
 
 /** One hook the Dashboard + Trend screens read for the whole readiness picture. */
@@ -90,5 +92,7 @@ export function useReadiness(weeks = 8): ReadinessNow {
     gap: Math.max(0, physical - confidence),
     series,
     hasData: sessions.length > 0 || checks.length > 0,
+    sessionCount: sessions.length,
+    checkCount: checks.length,
   };
 }

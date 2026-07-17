@@ -38,8 +38,17 @@ export interface MeasurementSession {
 export interface ConfidenceCheck {
   id: string;
   dateISO: string;
-  /** Self-reported trust in the leg, 0..100. */
+  /**
+   * Overall ACL-RSI score, 0..100 (higher = more psychologically ready).
+   * Kept as `score` so trend/gap views read one field regardless of source.
+   */
   score: number;
+  /** ACL-RSI subscale means, present on full 12-item checks. */
+  emotions?: number;
+  confidence?: number;
+  riskAppraisal?: number;
+  /** The 12 raw item answers (0..100) in item order, for auditability. */
+  responses?: number[];
   prompt?: string;
   note?: string;
 }
@@ -47,6 +56,8 @@ export interface ConfidenceCheck {
 export interface LadderRung {
   id: string;
   label: string;
+  /** Short cue on what this rung actually is / how to attempt it. */
+  note?: string;
   /** Optional flexion target that auto-completes the rung when reached. */
   targetFlexion?: number;
   done: boolean;

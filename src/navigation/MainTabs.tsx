@@ -25,7 +25,7 @@ export function MainTabs() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: palette.orange,
+        tabBarActiveTintColor: palette.green,
         tabBarInactiveTintColor: palette.textLow,
         tabBarStyle: styles.bar,
         tabBarLabelStyle: styles.label,

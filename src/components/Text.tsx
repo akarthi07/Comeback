@@ -1,5 +1,5 @@
 import { Text as RNText, TextProps, StyleSheet } from 'react-native';
-import { palette, type as typeScale } from '../theme';
+import { palette, type as typeScale, fonts } from '../theme';
 
 type Variant = keyof typeof typeScale;
 type Tone = 'hi' | 'mid' | 'low' | 'orange' | 'green' | 'amber' | 'red';
@@ -50,5 +50,5 @@ export function Text({
 const styles = StyleSheet.create({
   upper: { textTransform: 'uppercase' },
   center: { textAlign: 'center' },
-  mono: { fontFamily: 'monospace' },
+  mono: { fontFamily: fonts.monoMedium },
 });

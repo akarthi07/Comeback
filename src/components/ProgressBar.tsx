@@ -8,7 +8,7 @@ interface Props {
   height?: number;
 }
 
-export function ProgressBar({ value, color = palette.orange, track = palette.surfaceAlt, height = 8 }: Props) {
+export function ProgressBar({ value, color = palette.green, track = palette.surfaceAlt, height = 8 }: Props) {
   const pct = Math.max(0, Math.min(1, value));
   return (
     <View style={[styles.track, { backgroundColor: track, height, borderRadius: height }]}>

@@ -11,7 +11,7 @@ export function DashboardScreen() {
   const goal = useGoal((s) => s.goal);
   const sessions = useSessions((s) => s.sessions);
   const rungs = useLadder((s) => s.rungs);
-  const { physical, confidence, gap, series } = useReadiness();
+  const { physical, confidence, gap, series, hasData } = useReadiness();
 
   const dayN = goal ? Math.max(1, Math.floor((Date.now() - Date.parse(goal.createdAt)) / DAY)) : 1;
   const weekDelta =
@@ -26,39 +26,56 @@ export function DashboardScreen() {
     <Screen>
       {/* header */}
       <View style={styles.header}>
-        <View>
+        <View style={{ flex: 1 }}>
           <Text variant="h2">Comeback</Text>
           <Text variant="caption" tone="mid" style={{ marginTop: 2 }}>
             Day {dayN} · {goal?.activity ?? 'your comeback'}
           </Text>
         </View>
-        <Button title="Measure" size="md" onPress={() => nav.navigate('Measure')} />
-      </View>
-
-      {/* hero — physical readiness */}
-      <View style={styles.hero}>
-        <Text variant="label" tone="mid">Physical readiness</Text>
-        <View style={styles.heroRow}>
-          <Text variant="display" style={tabularNums}>{physical}</Text>
-          <Text variant="h1" tone="mid" style={styles.pct}>%</Text>
+        <View style={styles.headerActions}>
+          <Pressable onPress={() => nav.navigate('Settings')} hitSlop={10} style={styles.gear}>
+            <Text variant="h2" tone="mid">⋯</Text>
+          </Pressable>
+          <Button title="Measure" size="md" onPress={() => nav.navigate('Measure')} />
         </View>
-        <Text variant="body" tone={weekDelta >= 0 ? 'green' : 'red'} style={tabularNums}>
-          {weekDelta >= 0 ? '▲' : '▼'} {Math.abs(Math.round(weekDelta))} this week
-        </Text>
       </View>
 
-      {/* mini stat row */}
-      <View style={styles.stats}>
-        <Mini label="Best bend" value={`${bestFlexion}°`} />
-        <Mini label="Confidence" value={`${confidence}`} />
-        <Mini label="Gap" value={`${gap}`} tone={gap >= 18 ? 'amber' : 'hi'} />
-        <Mini label="Sessions" value={`${sessions.length}`} />
-      </View>
+      {hasData ? (
+        <>
+          {/* hero — physical readiness */}
+          <View style={styles.hero}>
+            <Text variant="label" tone="mid">Physical readiness</Text>
+            <View style={styles.heroRow}>
+              <Text variant="display" style={tabularNums}>{physical}</Text>
+              <Text variant="h1" tone="mid" style={styles.pct}>%</Text>
+            </View>
+            <Text variant="body" tone={weekDelta >= 0 ? 'green' : 'red'} style={tabularNums}>
+              {weekDelta >= 0 ? '+' : '−'}{Math.abs(Math.round(weekDelta))} pts this week
+            </Text>
+          </View>
 
-      {/* gap rail */}
-      <Card style={styles.card}>
-        <GapMeter physical={physical} confidence={confidence} />
-      </Card>
+          {/* mini stat row */}
+          <View style={styles.stats}>
+            <Mini label="Best bend" value={`${bestFlexion}°`} />
+            <Mini label="Confidence" value={`${confidence}`} />
+            <Mini label="Gap" value={`${gap}`} tone={gap >= 18 ? 'amber' : 'hi'} />
+            <Mini label="Sessions" value={`${sessions.length}`} />
+          </View>
+
+          {/* gap rail */}
+          <Card style={styles.card}>
+            <GapMeter physical={physical} confidence={confidence} />
+          </Card>
+        </>
+      ) : (
+        <Card style={styles.card}>
+          <Text variant="h2">Let's get your baseline</Text>
+          <Text variant="body" tone="mid" style={{ marginTop: spacing.sm }}>
+            Your dashboard fills in as you go. Take your first measurement and a confidence
+            check to start seeing your comeback — and the gap between body and head.
+          </Text>
+        </Card>
+      )}
 
       {/* up next */}
       <Text variant="label" tone="low" style={styles.sectionLabel}>Up next</Text>
@@ -104,6 +121,8 @@ function Divider() {
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.x3 },
+  headerActions: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+  gear: { paddingHorizontal: spacing.xs },
   hero: { marginBottom: spacing.x2 },
   heroRow: { flexDirection: 'row', alignItems: 'baseline', marginVertical: 2 },
   pct: { marginLeft: 2 },

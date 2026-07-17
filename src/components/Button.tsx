@@ -17,12 +17,12 @@ interface Props {
 }
 
 const pad: Record<Size, { v: number; h: number; font: 'title' | 'bodyStrong' | 'label' }> = {
-  lg: { v: 15, h: 22, font: 'title' },
-  md: { v: 11, h: 18, font: 'bodyStrong' },
-  sm: { v: 8, h: 14, font: 'label' },
+  lg: { v: 14, h: 20, font: 'bodyStrong' },
+  md: { v: 10, h: 16, font: 'bodyStrong' },
+  sm: { v: 7, h: 12, font: 'label' },
 };
 
-/** Flat pill button. Primary = solid orange with near-black text (fintech look). */
+/** Flat pill button. Primary = subtle filled surface + hairline (monochrome look). */
 export function Button({
   title,
   onPress,
@@ -59,7 +59,7 @@ export function Button({
           {left}
           <Text
             variant={p.font}
-            style={{ color: isPrimary ? palette.ink : isGhost ? palette.textMid : palette.textHi }}
+            style={{ color: isGhost ? palette.textMid : palette.textHi }}
           >
             {title}
           </Text>
@@ -70,10 +70,14 @@ export function Button({
 }
 
 const styles = StyleSheet.create({
-  base: { borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  base: { borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
   full: { alignSelf: 'stretch' },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  primary: { backgroundColor: palette.orange },
+  primary: {
+    backgroundColor: palette.surfaceAlt,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: palette.hairline,
+  },
   secondary: {
     backgroundColor: palette.surfaceAlt,
     borderWidth: StyleSheet.hairlineWidth,

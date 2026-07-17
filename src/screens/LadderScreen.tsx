@@ -20,7 +20,7 @@ export function LadderScreen() {
             </Text>
           </Text>
         </View>
-        <ProgressBar value={rungs.length ? done / rungs.length : 0} color={palette.orange} height={10} />
+        <ProgressBar value={rungs.length ? done / rungs.length : 0} color={palette.green} height={10} />
       </Card>
 
       {rungs.map((r, i) => {
@@ -29,7 +29,7 @@ export function LadderScreen() {
           <Pressable key={r.id} onPress={() => toggleRung(r.id)}>
             <Card
               padded={false}
-              accent={r.done ? palette.green : isNext ? palette.orange : undefined}
+              accent={r.done ? palette.green : isNext ? palette.green : undefined}
               style={[styles.rung, isNext && styles.rungNext]}
             >
               <View style={styles.rungBody}>
@@ -51,6 +51,11 @@ export function LadderScreen() {
                   <Text variant="title" tone={r.done ? 'mid' : 'hi'}>
                     {r.label}
                   </Text>
+                  {r.note && !r.done && (
+                    <Text variant="caption" tone="mid" style={{ marginTop: 3 }}>
+                      {r.note}
+                    </Text>
+                  )}
                   {r.targetFlexion != null && !r.done && (
                     <Text variant="caption" tone="low">
                       target {r.targetFlexion}° flexion
@@ -62,7 +67,7 @@ export function LadderScreen() {
                     </Text>
                   )}
                 </View>
-                {isNext && <Text variant="label" tone="orange">Next</Text>}
+                {isNext && <Text variant="label" tone="green">Next</Text>}
               </View>
             </Card>
           </Pressable>
@@ -75,7 +80,7 @@ export function LadderScreen() {
 const styles = StyleSheet.create({
   headerRow: { marginBottom: spacing.md },
   rung: { marginBottom: spacing.md, padding: spacing.lg },
-  rungNext: { borderColor: palette.orange },
+  rungNext: { borderColor: palette.green },
   rungBody: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   check: {
     width: 28,
